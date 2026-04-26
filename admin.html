@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH AI - Boshqaruv paneli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .admin-badge {
+            background: #ff4757;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button.delete-btn {
+            background: #dc3545;
+        }
+        button.edit-btn {
+            background: #ffc107;
+            color: #333;
+        }
+        .video-list, .user-list {
+            margin-top: 20px;
+        }
+        .video-item, .user-item {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .video-info, .user-info {
+            flex: 1;
+        }
+        .video-title, .user-name {
+            font-weight: bold;
+        }
+        .video-category {
+            color: #667eea;
+            font-size: 12px;
+        }
+        .video-actions, .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .success-msg {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            margin-top: 50px;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: #eee;
+            color: #333;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">📐 MATH AI</div>
+        <div class="nav-links">
+            <a href="dashboard.html">🏠 Bosh sahifa</a>
+            <a href="calendar.html">📅 Ish jadvali</a>
+            <a href="videos.html">📹 Video darsliklar</a>
+            <a href="admin.html">⚙️ Boshqaruv paneli</a>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 Chiqish</button>
+    </div>
+
+    <div class="container">
+        <span class="admin-badge">👑 ADMIN PANELI - Siz egasiz</span>
+        
+        <div id="successMsg" class="success-msg"></div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showTab('videos')">📹 Videolar</button>
+            <button class="tab-btn" onclick="showTab('users')">👥 Foydalanuvchilar</button>
+            <button class="tab-btn" onclick="showTab('settings')">⚙️ Sozlamalar</button>
+        </div>
+
+        <!-- Videolar paneli -->
+        <div id="videosTab" class="tab-content active">
+            <div class="section">
+                <h2>➕ Yangi video qo'shish</h2>
+                <input type="text" id="videoTitle" placeholder="Video nomi">
+                <textarea id="videoDesc" placeholder="Video tavsifi"></textarea>
+                <input type="text" id="videoCategory" placeholder="Kategoriya (Algebra, Geometriya, Trigonometriya...)">
+                <input type="text" id="videoUrl" placeholder="YouTube video linki (masalan: https://youtube.com/embed/... )">
+                <button onclick="addVideo()">➕ Video qo'shish</button>
+            </div>
+
+            <div class="section">
+                <h2>📋 Mavjud videolar</h2>
+                <div id="videoList" class="video-list"></div>
+            </div>
+        </div>
+
+        <!-- Foydalanuvchilar paneli -->
+        <div id="usersTab" class="tab-content">
+            <div class="section">
+                <h2>➕ Yangi foydalanuvchi qo'shish</h2>
+                <input type="text" id="newUsername" placeholder="Foydalanuvchi nomi">
+                <input type="password" id="newPassword" placeholder="Parol">
+                <button onclick="addUser()">➕ Foydalanuvchi qo'shish</button>
+            </div>
+
+            <div class="section">
+                <h2>👥 Ro'yxatdan o'tgan foydalanuvchilar</h2>
+                <div id="userList" class="user-list"></div>
+            </div>
+        </div>
+
+        <!-- Sozlamalar paneli -->
+        <div id="settingsTab" class="tab-content">
+            <div class="section">
+                <h2>⚙️ Admin sozlamalari</h2>
+                <label>Admin login:</label>
+                <input type="text" id="adminLogin" placeholder="Admin login">
+                <label>Admin parol:</label>
+                <input type="password" id="adminPassword" placeholder="Admin parol">
+                <button onclick="updateAdminSettings()">💾 Saqlash</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 MATH AI - Barcha huquqlar himoyalangan</p>
+    </footer>
+
+    <script>
+        let videos = [];
+        let users = [];
+
+        function loadData() {
+            const savedVideos = localStorage.getItem('math_videos');
+            if(savedVideos) {
+                videos = JSON.parse(savedVideos);
+            } else {
+                videos = [
+                    {id: 1, title: "Algebra - Asosiy tushunchalar", desc: "Algebra fanining asosiy qoidalari", category: "Algebra", url: "https://www.youtube.com/embed/dQw4w9WgXcQ"},
+                    {id: 2, title: "Geometriya - Uchburchaklar", desc: "Uchburchaklar turlari", category: "Geometriya", url: "https://www.youtube.com/embed/dQw4w9WgXcQ"},
+                    {id: 3, title: "Trigonometriya - Sinus va Kosinus", desc: "Trigonometrik funksiyalar", category: "Trigonometriya", url: "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+                ];
+                saveVideos();
+            }
+
+            const savedUsers = localStorage.getItem('math_users');
+            if(savedUsers) {
+                users = JSON.parse(savedUsers);
+            } else {
+                users = [
+                    {id: 1, username: "admin", password: "admin123"},
+                    {id: 2, username: "user1", password: "123456"}
+                ];
+                saveUsers();
+            }
+
+            renderVideoList();
+            renderUserList();
+            loadAdminSettings();
+        }
+
+        function saveVideos() {
+            localStorage.setItem('math_videos', JSON.stringify(videos));
+            updateVideosPage();
+        }
+
+        function saveUsers() {
+            localStorage.setItem('math_users', JSON.stringify(users));
+        }
+
+        function updateVideosPage() {
+            if(localStorage.getItem('math_videos')) {
+                const event = new Event('storage');
+                window.dispatchEvent(event);
+            }
+        }
+
+        function addVideo() {
+            const title = document.getElementById('videoTitle').value;
+            const desc = document.getElementById('videoDesc').value;
+            const category = document.getElementById('videoCategory').value;
+            const url = document.getElementById('videoUrl').value;
+
+            if(!title || !category || !url) {
+                showMessage('Iltimos, barcha maydonlarni to\'ldiring!', false);
+                return;
+            }
+
+            const newVideo = {
+                id: Date.now(),
+                title: title,
+                desc: desc,
+                category: category,
+                url: url
+            };
+
+            videos.push(newVideo);
+            saveVideos();
+            renderVideoList();
+            
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoDesc').value = '';
+            document.getElementById('videoCategory').value = '';
+            document.getElementById('videoUrl').value = '';
+            
+            showMessage('Video muvaffaqiyatli qo\'shildi!', true);
+        }
+
+        function deleteVideo(id) {
+            if(confirm('Ushbu videoni o\'chirmoqchimisiz?')) {
+                videos = videos.filter(v => v.id !== id);
+                saveVideos();
+                renderVideoList();
+                showMessage('Video o\'chirildi!', true);
+            }
+        }
+
+        function renderVideoList() {
+            const container = document.getElementById('videoList');
+            if(videos.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#888;">Hech qanday video mavjud emas</p>';
+                return;
+            }
+
+            container.innerHTML = videos.map(video => `
+                <div class="video-item">
+                    <div class="video-info">
+                        <div class="video-title">${video.title}</div>
+                        <div class="video-category">${video.category}</div>
+                        <div style="font-size:12px;color:#888;">${video.desc || 'Tavsif mavjud emas'}</div>
+                    </div>
+                    <div class="video-actions">
+                        <button class="delete-btn" onclick="deleteVideo(${video.id})">🗑 O'chirish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addUser() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+
+            if(!username || !password) {
+                showMessage('Foydalanuvchi nomi va parolni kiriting!', false);
+                return;
+            }
+
+            if(users.find(u => u.username === username)) {
+                showMessage('Bu foydalanuvchi nomi band!', false);
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                username: username,
+                password: password
+            };
+
+            users.push(newUser);
+            saveUsers();
+            renderUserList();
+            
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            
+            showMessage('Foydalanuvchi qo\'shildi!', true);
+        }
+
+        function deleteUser(id) {
+            if(confirm('Bu foydalanuvchini o\'chirmoqchimisiz?')) {
+                users = users.filter(u => u.id !== id);
+                saveUsers();
+                renderUserList();
+                showMessage('Foydalanuvchi o\'chirildi!', true);
+            }
+        }
+
+        function renderUserList() {
+            const container = document.getElementById('userList');
+            if(users.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#888;">Hech qanday foydalanuvchi mavjud emas</p>';
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-name">${user.username}</div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="delete-btn" onclick="deleteUser(${user.id})">🗑 O'chirish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateAdminSettings() {
+            const newLogin = document.getElementById('adminLogin').value;
+            const newPassword = document.getElementById('adminPassword').value;
+            
+            if(newLogin && newPassword) {
+                const adminUser = users.find(u => u.username === 'admin');
+                if(adminUser) {
+                    adminUser.username = newLogin;
+                    adminUser.password = newPassword;
+                    saveUsers();
+                    showMessage('Admin sozlamalari saqlandi! Yangi login bilan kiring.', true);
+                    setTimeout(() => {
+                        localStorage.removeItem('loggedIn');
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }
+            } else {
+                showMessage('Login va parolni to\'ldiring!', false);
+            }
+        }
+
+        function loadAdminSettings() {
+            const adminUser = users.find(u => u.username === 'admin');
+            if(adminUser) {
+                document.getElementById('adminLogin').value = adminUser.username;
+                document.getElementById('adminPassword').value = adminUser.password;
+            }
+        }
+
+        function showMessage(msg, isSuccess) {
+            const msgDiv = document.getElementById('successMsg');
+            msgDiv.textContent = msg;
+            msgDiv.style.backgroundColor = isSuccess ? '#28a745' : '#dc3545';
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedIn');
+            window.location.href = 'index.html';
+        }
+
+        if(localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
