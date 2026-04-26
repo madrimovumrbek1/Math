@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH AI - Admin panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            background: #f0f2f5;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 24px;
+        }
+
+        /* Admin Badge */
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 32px;
+            color: white;
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .admin-header p {
+            opacity: 0.9;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(102,126,234,0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 14px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* Lists */
+        .list-item {
+            background: #f9fafb;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .list-item-info {
+            flex: 1;
+        }
+
+        .list-item-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .list-item-sub {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .success-msg {
+            background: #10b981;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .list-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .list-item-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">📐 MATH AI</div>
+        <div class="nav-links">
+            <a href="dashboard.html">🏠 Bosh sahifa</a>
+            <a href="calendar.html">📅 Vazifalar</a>
+            <a href="videos.html">📹 Darsliklar</a>
+            <a href="admin.html" class="active">⚙️ Admin</a>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 Chiqish</button>
+    </div>
+
+    <div class="container">
+        <div class="admin-header">
+            <h1>👑 Admin boshqaruv paneli</h1>
+            <p>Siz saytning to'liq egasisiz. Videolar, foydalanuvchilar va sozlamalarni boshqaring.</p>
+        </div>
+
+        <div id="successMsg" class="success-msg">✅ Muvaffaqiyatli!</div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('videos')">🎬 Videolar</button>
+            <button class="tab-btn" onclick="showTab('users')">👥 Foydalanuvchilar</button>
+            <button class="tab-btn" onclick="showTab('settings')">⚙️ Sozlamalar</button>
+            <button class="tab-btn" onclick="showTab('stats')">📊 Statistika</button>
+        </div>
+
+        <!-- Videos Tab -->
+        <div id="videosTab" class="tab-content active">
+            <div class="card">
+                <h2>➕ Yangi video qo'shish</h2>
+                <div class="form-group">
+                    <label>🎬 Video nomi</label>
+                    <input type="text" id="videoTitle" placeholder="Masalan: Algebra - Tenglamalar">
+                </div>
+                <div class="form-group">
+                    <label>📝 Tavsif</label>
+                    <textarea id="videoDesc" rows="3" placeholder="Video haqida qisqacha..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📁 Kategoriya</label>
+                    <input type="text" id="videoCategory" placeholder="Algebra, Geometriya, Trigonometriya...">
+                </div>
+                <div class="form-group">
+                    <label>🔗 YouTube linki</label>
+                    <input type="text" id="videoUrl" placeholder="https://www.youtube.com/embed/...">
+                </div>
+                <button class="btn-primary" onclick="addVideo()">➕ Video qo'shish</button>
+            </div>
+
+            <div class="card">
+                <h2>📋 Barcha videolar</h2>
+                <div id="videoList"></div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" class="tab-content">
+            <div class="card">
+                <h2>➕ Yangi foydalanuvchi</h2>
+                <div class="form-group">
+                    <label>👤 Login</label>
+                    <input type="text" id="newUsername" placeholder="foydalanuvchi_nomi">
+                </div>
+                <div class="form-group">
+                    <label>🔒 Parol</label>
+                    <input type="password" id="newPassword" placeholder="********">
+                </div>
+                <button class="btn-primary" onclick="addUser()">➕ Qo'shish</button>
+            </div>
+
+            <div class="card">
+                <h2>👥 Foydalanuvchilar ro'yxati</h2>
+                <div id="userList"></div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" class="tab-content">
+            <div class="card">
+                <h2>🔐 Admin sozlamalari</h2>
+                <div class="form-group">
+                    <label>Admin login</label>
+                    <input type="text" id="adminLogin" placeholder="admin">
+                </div>
+                <div class="form-group">
+                    <label>Admin parol</label>
+                    <input type="password" id="adminPassword" placeholder="********">
+                </div>
+                <button class="btn-primary" onclick="updateAdmin()">💾 Saqlash</button>
+            </div>
+
+            <div class="card">
+                <h2>🗑 Ma'lumotlarni tozalash</h2>
+                <button class="btn-danger" onclick="clearAllData()" style="width:100%">⚠️ Barcha ma'lumotlarni o'chirish</button>
+                <p style="margin-top:12px; font-size:12px; color:#9ca3af;">Bu amal barcha videolar, vazifalar va foydalanuvchilarni o'chiradi!</p>
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div id="statsTab" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number" id="statVideos">0</div>
+                    <div>Video darsliklar</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statTasks">0</div>
+                    <div>Vazifalar</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statUsers">0</div>
+                    <div>Foydalanuvchilar</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statCompleted">0</div>
+                    <div>Bajarilgan vazifalar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let videos = [];
+        let users = [];
+
+        function loadData() {
+            const savedVideos = localStorage.getItem('math_videos');
+            if(savedVideos) videos = JSON.parse(savedVideos);
+            else videos = [];
+
+            const savedUsers = localStorage.getItem('math_users');
+            if(savedUsers) users = JSON.parse(savedUsers);
+            else users = [];
+
+            renderVideoList();
+            renderUserList();
+            updateStats();
+        }
+
+        function saveVideos() {
+            localStorage.setItem('math_videos', JSON.stringify(videos));
+            if(window.renderVideos) window.renderVideos();
+            updateStats();
+        }
+
+        function saveUsers() {
+            localStorage.setItem('math_users', JSON.stringify(users));
+            updateStats();
+        }
+
+        function addVideo() {
+            const title = document.getElementById('videoTitle').value.trim();
+            const desc = document.getElementById('videoDesc').value;
+            const category = document.getElementById('videoCategory').value.trim();
+            const url = document.getElementById('videoUrl').value.trim();
+
+            if(!title || !category || !url) {
+                showMessage('Iltimos, barcha maydonlarni to\'ldiring!', false);
+                return;
+            }
+
+            const newVideo = {
+                id: Date.now(),
+                title: title,
+                desc: desc,
+                category: category,
+                url: url
+            };
+
+            videos.push(newVideo);
+            saveVideos();
+            renderVideoList();
+            
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoDesc').value = '';
+            document.getElementById('videoCategory').value = '';
+            document.getElementById('videoUrl').value = '';
+            
+            showMessage('Video muvaffaqiyatli qo\'shildi!', true);
+        }
+
+        function deleteVideo(id) {
+            if(confirm('Ushbu videoni o\'chirmoqchimisiz?')) {
+                videos = videos.filter(v => v.id !== id);
+                saveVideos();
+                renderVideoList();
+                showMessage('Video o\'chirildi!', true);
+            }
+        }
+
+        function renderVideoList() {
+            const container = document.getElementById('videoList');
+            if(videos.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#9ca3af;">📭 Hech qanday video mavjud emas</p>';
+                return;
+            }
+
+            container.innerHTML = videos.map(video => `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-title">${video.title}</div>
+                        <div class="list-item-sub">${video.category} | ${video.desc || 'Tavsifsiz'}</div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="btn-danger" onclick="deleteVideo(${video.id})">🗑 O'chirish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+
+            if(!username || !password) {
+                showMessage('Login va parolni kiriting!', false);
+                return;
+            }
+
+            if(users.find(u => u.username === username)) {
+                showMessage('Bu login band!', false);
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                username: username,
+                password: password
+            };
+
+            users.push(newUser);
+            saveUsers();
+            renderUserList();
+            
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            
+            showMessage('Foydalanuvchi qo\'shildi!', true);
+        }
+
+        function deleteUser(id) {
+            if(confirm('Bu foydalanuvchini o\'chirmoqchimisiz?')) {
+                users = users.filter(u => u.id !== id);
+                saveUsers();
+                renderUserList();
+                showMessage('Foydalanuvchi o\'chirildi!', true);
+            }
+        }
+
+        function renderUserList() {
+            const container = document.getElementById('userList');
+            if(users.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#9ca3af;">👥 Qo\'shimcha foydalanuvchilar yo\'q</p>';
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-title">👤 ${user.username}</div>
+                        <div class="list-item-sub">ID: ${user.id}</div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="btn-danger" onclick="deleteUser(${user.id})">🗑 O'chirish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateAdmin() {
+            const newLogin = document.getElementById('adminLogin').value.trim();
+            const newPassword = document.getElementById('adminPassword').value;
+
+            if(!newLogin || !newPassword) {
+                showMessage('Login va parolni to\'ldiring!', false);
+                return;
+            }
+
+            const adminUser = users.find(u => u.username === 'admin');
+            if(adminUser) {
+                adminUser.username = newLogin;
+                adminUser.password = newPassword;
+                saveUsers();
+                showMessage('Admin sozlamalari saqlandi! Qayta kiring.', true);
+                setTimeout(() => {
+                    localStorage.removeItem('math_logged_in');
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                users.push({id: Date.now(), username: newLogin, password: newPassword});
+                saveUsers();
+                showMessage('Admin sozlamalari saqlandi!', true);
+            }
+        }
+
+        function clearAllData() {
+            if(confirm('BU AMAL HAMMA MA\'LUMOTLARNI O\'CHIRADI! Davom etmoqchimisiz?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function updateStats() {
+            const tasks = JSON.parse(localStorage.getItem('math_tasks') || '[]');
+            document.getElementById('statVideos').innerText = videos.length;
+            document.getElementById('statTasks').innerText = tasks.length;
+            document.getElementById('statUsers').innerText = users.length + 1;
+            document.getElementById('statCompleted').innerText = tasks.filter(t => t.completed).length;
+        }
+
+        function showMessage(msg, isSuccess) {
+            const msgDiv = document.getElementById('successMsg');
+            msgDiv.textContent = isSuccess ? '✅ ' + msg : '❌ ' + msg;
+            msgDiv.style.backgroundColor = isSuccess ? '#10b981' : '#ef4444';
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('math_logged_in');
+            window.location.href = 'index.html';
+        }
+
+        if(localStorage.getItem('math_logged_in') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('adminLogin').value = 'admin';
+        document.getElementById('adminPassword').value = 'admin123';
+
+        loadData();
+    </script>
+</body>
+</html>
