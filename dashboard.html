@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH AI - Boshqaruv paneli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            background: #f0f2f5;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 24px;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 28px;
+            padding: 32px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .welcome-card h1 {
+            font-size: 32px;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .welcome-card p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        /* Features */
+        .section-title {
+            font-size: 24px;
+            color: #1f2937;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Quick Tasks */
+        .quick-tasks {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-check.completed {
+            background: #667eea;
+            position: relative;
+        }
+
+        .task-check.completed::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .task-text {
+            flex: 1;
+            margin-left: 16px;
+            font-size: 16px;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .task-date {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .welcome-card h1 {
+                font-size: 24px;
+            }
+            .container {
+                padding: 20px 16px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            📐 MATH AI
+            <span>Beta</span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active">🏠 Bosh sahifa</a>
+            <a href="calendar.html">📅 Vazifalar</a>
+            <a href="videos.html">📹 Darsliklar</a>
+            <a href="admin.html">⚙️ Admin</a>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 Chiqish</button>
+    </div>
+
+    <div class="container">
+        <div class="welcome-card">
+            <h1>👋 Assalomu alaykum, <span id="userName">Admin</span>!</h1>
+            <p>Matematikani oson va qiziqarli o‘rganing. Bugungi rejalaringizni ko‘rib chiqing.</p>
+            <div class="date-badge" id="currentDate"></div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📹</div>
+                <div class="stat-number" id="videoCount">0</div>
+                <div class="stat-label">Video darsliklar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number" id="taskCount">0</div>
+                <div class="stat-label">Bajarilgan vazifalar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number" id="userCount">0</div>
+                <div class="stat-label">Foydalanuvchilar</div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            🚀 Tezkor o‘tish
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" onclick="location.href='calendar.html'">
+                <div class="feature-icon">📅</div>
+                <div class="feature-title">Ish jadvali</div>
+                <div class="feature-desc">Kunlik, haftalik rejalaringizni tuzing va eslatmalar oling</div>
+            </div>
+            <div class="feature-card" onclick="location.href='videos.html'">
+                <div class="feature-icon">📹</div>
+                <div class="feature-title">Video darsliklar</div>
+                <div class="feature-desc">Matematikadan interaktiv video darslar</div>
+            </div>
+            <div class="feature-card" onclick="location.href='admin.html'">
+                <div class="feature-icon">⚙️</div>
+                <div class="feature-title">Boshqaruv paneli</div>
+                <div class="feature-desc">Videolar, foydalanuvchilar va sozlamalar</div>
+            </div>
+        </div>
+
+        <div class="quick-tasks">
+            <h3 style="margin-bottom: 20px;">📋 Bugungi vazifalar</h3>
+            <div id="todayTasks"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateStats() {
+            const videos = JSON.parse(localStorage.getItem('math_videos') || '[]');
+            const tasks = JSON.parse(localStorage.getItem('math_tasks') || '[]');
+            const users = JSON.parse(localStorage.getItem('math_users') || '[]');
+            
+            document.getElementById('videoCount').innerText = videos.length;
+            document.getElementById('taskCount').innerText = tasks.filter(t => t.completed).length;
+            document.getElementById('userCount').innerText = users.length + 1;
+        }
+
+        function showTodayTasks() {
+            const tasks = JSON.parse(localStorage.getItem('math_tasks') || '[]');
+            const today = new Date().toISOString().split('T')[0];
+            const todayTasks = tasks.filter(t => t.date && t.date.split('T')[0] === today && !t.completed);
+            
+            const container = document.getElementById('todayTasks');
+            if(todayTasks.length === 0) {
+                container.innerHTML = '<p style="color:#9ca3af; text-align:center;">🎉 Bugungi vazifalar yo‘q. Dam oling yoki yangi vazifa qo‘shing!</p>';
+                return;
+            }
+            
+            container.innerHTML = todayTasks.map(task => `
+                <div class="task-item">
+                    <div class="task-check" onclick="toggleTask(${task.id})"></div>
+                    <div class="task-text">${task.title}</div>
+                    <div class="task-date">${task.date ? new Date(task.date).toLocaleTimeString() : ''}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTask(id) {
+            let tasks = JSON.parse(localStorage.getItem('math_tasks') || '[]');
+            const task = tasks.find(t => t.id === id);
+            if(task) {
+                task.completed = !task.completed;
+                localStorage.setItem('math_tasks', JSON.stringify(tasks));
+                showTodayTasks();
+                updateStats();
+            }
+        }
+
+        function setDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('uz-UZ', options);
+        }
+
+        function logout() {
+            localStorage.removeItem('math_logged_in');
+            window.location.href = 'index.html';
+        }
+
+        if(localStorage.getItem('math_logged_in') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        const user = localStorage.getItem('math_current_user') || 'Admin';
+        document.getElementById('userName').innerText = user;
+
+        setDate();
+        updateStats();
+        showTodayTasks();
+    </script>
+</body>
+</html>
